@@ -54,73 +54,86 @@ INSERT INTO payment_statuses (payment_status_id, name, description) VALUES
 ON DUPLICATE KEY UPDATE description=VALUES(description);
 
 -- ============================================
--- Datos: categories (Jerarquía de ejemplo)
+-- Datos: categories (EPA - Empresa Proveedora de Alimentos)
 -- ============================================
+-- Se conservan los IDs originales y solo cambia el rotulo, para no romper
+-- las filas de products que ya apuntan a estas categorias.
 -- Categorías raíz
 INSERT INTO categories (category_id, parent_id, name, slug) VALUES
-(1, NULL, 'Electronics', 'electronics'),
-(2, NULL, 'Clothing', 'clothing'),
-(3, NULL, 'Books', 'books'),
-(4, NULL, 'Home & Garden', 'home-garden')
-ON DUPLICATE KEY UPDATE name=VALUES(name);
+(1, NULL, 'Despensa', 'despensa'),
+(2, NULL, 'Aseo del hogar', 'aseo-del-hogar'),
+(3, NULL, 'Cuidado personal', 'cuidado-personal'),
+(4, NULL, 'Bebidas', 'bebidas')
+ON DUPLICATE KEY UPDATE name=VALUES(name), slug=VALUES(slug), parent_id=VALUES(parent_id);
 
--- Subcategorías de Electronics
+-- Subcategorías de Despensa
 INSERT INTO categories (category_id, parent_id, name, slug) VALUES
-(11, 1, 'Computers', 'computers'),
-(12, 1, 'Smartphones', 'smartphones'),
-(13, 1, 'Audio', 'audio'),
-(14, 1, 'Cameras', 'cameras')
-ON DUPLICATE KEY UPDATE name=VALUES(name);
+(11, 1, 'Granos y pastas', 'granos-y-pastas'),
+(12, 1, 'Aceites y salsas', 'aceites-y-salsas'),
+(13, 1, 'Lácteos', 'lacteos'),
+(14, 1, 'Snacks y confitería', 'snacks-y-confiteria')
+ON DUPLICATE KEY UPDATE name=VALUES(name), slug=VALUES(slug), parent_id=VALUES(parent_id);
 
--- Subcategorías de Clothing
+-- Subcategorías de Aseo del hogar
 INSERT INTO categories (category_id, parent_id, name, slug) VALUES
-(21, 2, 'Men', 'men-clothing'),
-(22, 2, 'Women', 'women-clothing'),
-(23, 2, 'Kids', 'kids-clothing')
-ON DUPLICATE KEY UPDATE name=VALUES(name);
+(21, 2, 'Detergentes', 'detergentes'),
+(22, 2, 'Limpiadores', 'limpiadores'),
+(23, 2, 'Cuidado del bebé', 'cuidado-del-bebe')
+ON DUPLICATE KEY UPDATE name=VALUES(name), slug=VALUES(slug), parent_id=VALUES(parent_id);
 
--- Subcategorías de Books
+-- Subcategorías de Cuidado personal
 INSERT INTO categories (category_id, parent_id, name, slug) VALUES
-(31, 3, 'Fiction', 'fiction'),
-(32, 3, 'Non-Fiction', 'non-fiction'),
-(33, 3, 'Technical', 'technical-books')
-ON DUPLICATE KEY UPDATE name=VALUES(name);
+(31, 3, 'Higiene personal', 'higiene-personal'),
+(32, 3, 'Mascotas', 'mascotas'),
+(33, 3, 'Enlatados', 'enlatados')
+ON DUPLICATE KEY UPDATE name=VALUES(name), slug=VALUES(slug), parent_id=VALUES(parent_id);
 
 -- ============================================
--- Datos: products (Ejemplos)
+-- Datos: products (EPA - alimentos y consumo masivo)
 -- ============================================
--- Productos de Electronics > Computers
+-- Despensa > Granos y pastas
 INSERT INTO products (product_id, category_id, sku, name, description, price, stock_qty, is_active, image) VALUES
-(1, 11, 'COMP-LAP-001', 'Dell XPS 13 Laptop', 'Ultrabook de alto rendimiento con procesador Intel Core i7 de 13a generación, pantalla OLED de 13.4 pulgadas Full HD+, 16 GB de RAM LPDDR5 y SSD NVMe de 512 GB. Diseño compacto y liviano ideal para profesionales y estudiantes que requieren potencia y portabilidad.', 5200000.00, 15, TRUE, 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&fit=crop&auto=format'),
-(2, 11, 'COMP-LAP-002', 'MacBook Air M2', 'Laptop ultradelgada de Apple con chip M2 de última generación, pantalla Liquid Retina de 13.6 pulgadas, 8 GB de memoria unificada y SSD de 256 GB. Batería de hasta 18 horas de autonomía, diseño sin ventilador y rendimiento excepcional para creativos y profesionales.', 4800000.00, 10, TRUE, 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&fit=crop&auto=format'),
-(3, 11, 'COMP-DES-001', 'Gaming Desktop PC', 'PC de escritorio para gaming de alto nivel equipado con procesador Intel Core i9, tarjeta gráfica NVIDIA GeForce RTX 4080 de 16 GB, 32 GB de RAM DDR5 y SSD NVMe de 1 TB. Torre con iluminación RGB, refrigeración líquida y chasis optimizado para máximo airflow.', 9900000.00, 5, TRUE, 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600&fit=crop&auto=format')
-ON DUPLICATE KEY UPDATE description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
+(1, 11, 'DESP-GRA-001', 'Arroz blanco Zulia 1 kg', '', 4500.00, 200, TRUE, ''),
+(2, 11, 'DESP-GRA-002', 'Fríjol cargamanto Granipack 500 g', '', 8900.00, 120, TRUE, ''),
+(3, 11, 'DESP-GRA-003', 'Pasta espagueti Jirafa 500 g', '', 3200.00, 150, TRUE, '')
+ON DUPLICATE KEY UPDATE category_id=VALUES(category_id), sku=VALUES(sku), name=VALUES(name), description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
 
--- Productos de Electronics > Smartphones
+-- Despensa > Aceites y salsas
 INSERT INTO products (product_id, category_id, sku, name, description, price, stock_qty, is_active, image) VALUES
-(4, 12, 'PHONE-IP-001', 'iPhone 15 Pro', 'Smartphone insignia de Apple con chip A17 Pro de 3 nm, pantalla Super Retina XDR de 6.1 pulgadas con ProMotion a 120 Hz, sistema de cámara Pro de 48 MP con zoom óptico 3x y conector USB-C con velocidades USB 3. Cuerpo en titanio grado aeroespacial, resistente al agua IP68.', 4200000.00, 20, TRUE, 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&fit=crop&auto=format'),
-(5, 12, 'PHONE-SAM-001', 'Samsung Galaxy S24', 'Teléfono insignia de Samsung con procesador Snapdragon 8 Gen 3, pantalla Dynamic AMOLED 2X de 6.2 pulgadas a 120 Hz, cámara principal de 50 MP con inteligencia artificial avanzada y batería de 4000 mAh con carga rápida de 25 W. Incluye funciones Galaxy AI para productividad y creatividad.', 3500000.00, 25, TRUE, 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600&fit=crop&auto=format'),
-(6, 12, 'PHONE-PIX-001', 'Google Pixel 8', 'Smartphone de Google con chip Tensor G3 diseñado por Google, cámara de 50 MP con capacidades de inteligencia artificial como Borrador Mágico y Foto sin desenfoque, pantalla OLED de 6.2 pulgadas a 120 Hz y 7 años garantizados de actualizaciones de Android y seguridad.', 2800000.00, 15, TRUE, 'https://images.unsplash.com/photo-1598327105854-c8674faddf79?w=600&fit=crop&auto=format')
-ON DUPLICATE KEY UPDATE description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
+(4, 12, 'DESP-SAL-001', 'Salsa de tomate Fruco 380 g', '', 6800.00, 90, TRUE, ''),
+(5, 12, 'DESP-SAL-002', 'Margarina Rama 250 g', '', 7500.00, 80, TRUE, ''),
+(6, 12, 'DESP-ACE-001', 'Aceite de girasol Gran Cocina 1 L', '', 12900.00, 70, TRUE, '')
+ON DUPLICATE KEY UPDATE category_id=VALUES(category_id), sku=VALUES(sku), name=VALUES(name), description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
 
--- Productos de Electronics > Audio
+-- Despensa > Lácteos
 INSERT INTO products (product_id, category_id, sku, name, description, price, stock_qty, is_active, image) VALUES
-(7, 13, 'AUD-HEAD-001', 'Sony WH-1000XM5', 'Audífonos inalámbricos over-ear con cancelación de ruido líder en la industria, respaldada por dos procesadores y ocho micrófonos. Audio de alta resolución, hasta 30 horas de batería, conexión multipunto a dos dispositivos simultáneos y diseño ultraliviano plegable para mayor comodidad en viajes.', 1600000.00, 30, TRUE, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&fit=crop&auto=format'),
-(8, 13, 'AUD-SPEAK-001', 'JBL Flip 6', 'Parlante Bluetooth portátil con sonido potente de 20 W, bajos profundos y dos tweeters. Resistente al agua y al polvo con certificación IP67, batería de 12 horas de reproducción, modo Partyboost para conectar múltiples parlantes JBL y diseño compacto ideal para exteriores.', 520000.00, 50, TRUE, 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&fit=crop&auto=format')
-ON DUPLICATE KEY UPDATE description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
+(7, 13, 'DESP-LAC-001', 'Leche entera Parmalat 1 L', '', 4200.00, 300, TRUE, ''),
+(8, 13, 'DESP-LAC-002', 'Queso campesino Parmalat 500 g', '', 11500.00, 60, TRUE, '')
+ON DUPLICATE KEY UPDATE category_id=VALUES(category_id), sku=VALUES(sku), name=VALUES(name), description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
 
--- Productos de Clothing > Men
+-- Despensa > Snacks y confitería
 INSERT INTO products (product_id, category_id, sku, name, description, price, stock_qty, is_active, image) VALUES
-(9, 21, 'CLOTH-MEN-001', 'Classic Denim Jeans', 'Jean de corte recto en denim 100% algodón de alta calidad, con lavado clásico azul medio. Cintura ajustable, bolsillos funcionales y costuras reforzadas para mayor durabilidad. Tallas disponibles del 28 al 42. Ideal para un look casual o semiformal.', 240000.00, 100, TRUE, 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&fit=crop&auto=format'),
-(10, 21, 'CLOTH-MEN-002', 'Cotton T-Shirt', 'Camiseta básica de algodón peinado 180 g/m², suave al tacto y de larga duración. Cuello redondo reforzado, costuras dobles en mangas y bajo, y corte regular que favorece todo tipo de silueta. Disponible en tallas XS a XXL y múltiples colores.', 80000.00, 200, TRUE, 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&fit=crop&auto=format')
-ON DUPLICATE KEY UPDATE description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
+(9, 14, 'DESP-CON-001', 'Gomas surtidas Aldor 100 g', '', 2500.00, 250, TRUE, ''),
+(10, 14, 'DESP-CON-002', 'Chocolatinas Aldor 12 und', '', 3800.00, 180, TRUE, '')
+ON DUPLICATE KEY UPDATE category_id=VALUES(category_id), sku=VALUES(sku), name=VALUES(name), description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
 
--- Productos de Books > Technical
+-- Aseo del hogar
 INSERT INTO products (product_id, category_id, sku, name, description, price, stock_qty, is_active, image) VALUES
-(11, 33, 'BOOK-TECH-001', 'Clean Code', 'Libro de Robert C. Martin que presenta principios, patrones y prácticas para escribir código limpio, legible y mantenible. Cubre nombres significativos, funciones cortas, manejo de errores, pruebas unitarias y refactorización. Lectura obligatoria para cualquier desarrollador de software profesional.', 180000.00, 50, TRUE, 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=600&fit=crop&auto=format'),
-(12, 33, 'BOOK-TECH-002', 'Design Patterns', 'Obra clásica de la "Gang of Four" (Gamma, Helm, Johnson, Vlissides) que cataloga 23 patrones de diseño orientado a objetos reutilizables. Incluye patrones creacionales, estructurales y de comportamiento con ejemplos prácticos. Base fundamental del desarrollo de software moderno.', 220000.00, 40, TRUE, 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=600&fit=crop&auto=format'),
-(13, 33, 'BOOK-TECH-003', 'Java Persistence with Hibernate', 'Guía completa sobre JPA e Hibernate para el mapeo objeto-relacional en Java. Cubre configuración, mapeo de entidades, consultas JPQL y Criteria API, gestión de transacciones, caché y estrategias de rendimiento. Incluye ejemplos con Spring Boot y bases de datos relacionales.', 190000.00, 30, TRUE, 'https://images.unsplash.com/photo-1589998059171-988d887df646?w=600&fit=crop&auto=format')
-ON DUPLICATE KEY UPDATE description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
+(11, 21, 'HOGA-DET-001', 'Detergente en polvo Henkel 2 kg', '', 15900.00, 100, TRUE, ''),
+(12, 22, 'HOGA-LIM-001', 'Limpiador multiusos Zafey 1 L', '', 8400.00, 110, TRUE, '')
+ON DUPLICATE KEY UPDATE category_id=VALUES(category_id), sku=VALUES(sku), name=VALUES(name), description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
+
+-- Cuidado personal
+INSERT INTO products (product_id, category_id, sku, name, description, price, stock_qty, is_active, image) VALUES
+(13, 31, 'PERS-HIG-001', 'Jabón de tocador Dove 90 g', '', 5900.00, 200, TRUE, ''),
+(22, 32, 'PERS-MAS-001', 'Alimento para perro Solla 2 kg', '', 45000.00, 40, TRUE, ''),
+(23, 33, 'PERS-ENL-001', 'Atún en lomitos Agronat 160 g', '', 6200.00, 140, TRUE, '')
+ON DUPLICATE KEY UPDATE category_id=VALUES(category_id), sku=VALUES(sku), name=VALUES(name), description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
+
+-- Bebidas
+INSERT INTO products (product_id, category_id, sku, name, description, price, stock_qty, is_active, image) VALUES
+(21, 4, 'BEBI-INF-001', 'Té Lipton limón 20 sobres', '', 9800.00, 130, TRUE, '')
+ON DUPLICATE KEY UPDATE category_id=VALUES(category_id), sku=VALUES(sku), name=VALUES(name), description=VALUES(description), price=VALUES(price), stock_qty=VALUES(stock_qty), image=VALUES(image);
 
 -- ============================================
 -- Datos: users (Ejemplos para testing)
